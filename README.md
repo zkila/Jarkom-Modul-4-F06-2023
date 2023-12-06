@@ -131,6 +131,11 @@ Berikut adalah hasil tes ping routing pada bagian ini:
 ![Alt text](images/tesrouting.png)
   
 Selebihnya, konfigurasi routing antar subnet yang lain harusnya sama, dengan pengenalan setiap subnet yang tidak langsung terhubung di bagian static routing di router.  
+
+Karena Aura adalah router pusat, maka Aura adalah router dengan konfigurasi routing terbanyak sebagai berikut:
+
+![alt](images/rutingaura1.png)
+![alt](images/rutingaura2.png)
   
 Berikut adalah hasil tes ping routing VLSM lebih menyeluruh:
 ![Alt text](images/tesvlsm.png)
