@@ -13,7 +13,8 @@ Kelompok F06:
 - [Daftar Isi](#daftar-isi)
 - [Soal](#soal)
 - [Pembagian Subnet](#pembagian-subnet)
-- [VLSM](#vlsm-cpt)
+- [VLSM Subnetting](#vlsm-cpt-subnetting)
+- [VLSM Routing](#vlsm-cpt-routing)
 
 ### Soal
 
@@ -25,7 +26,9 @@ Keterangan: Bila di CPT menggunakan VLSM, maka di GNS3 menggunakan CIDR atau seb
 - Pembagian IP menggunakan Prefix IP yang telah ditentukan pada modul pengenalan
 - Pembagian IP dan routing harus SE-EFISIEN MUNGKIN.
 
-### Pembagian Subnet
+### Pembagian Subnet 
+- [Daftar Isi](#daftar-isi)
+
 Topologi soal dibagi menjadi subnet sebagai berikut:
 ![Alt text](images/vlsm.png)  
   
@@ -36,7 +39,10 @@ Dengan pembagian rute sebagai berikut:
 - Metode pembagian dilakukan dengan melihat urutan switch pada setiap subnet. Maka dari itu kelas A1 sampai A12 adalah subnet yang memiliki host/client dan sisanya adalah subnet diantara subnet subnet tersebut.
 - Setelah proses pembagian subnet/kelas ini, bisa dilakukan proses pembagian IP dan NID dengan metode VLSM dan CIDR tadi.
 
-### VLSM-CPT
+### VLSM-CPT-Subnetting
+- [Daftar Isi](#daftar-isi) 
+
+
 Dengan pembagian kelas A sebagai berikut:
 ![Alt text](images/vlsm.png)  
   
@@ -91,8 +97,10 @@ Apabila sudah diconfig seperti diatas, maka bisa dilakukan ping dalam satu subne
   
 - Konfigurasi ini dilakukan pada setiap subnet, sesuai dengan pembagian NID, Netmask, dan IP Broadcast di [Spreadsheet Pembagian VLSM](https://docs.google.com/spreadsheets/d/14c60BSwHFZ9jMbxMC8V4LwsBkQ76Yv2QWYykRAxKQ2Y/edit?usp=sharing).
 - Tentu saja konfigurasi ini belum mencakup connection antar subnet, sehingga masih belum bisa ping antar subnet. Hal tersebut akan dilakukan pada konfigurasi routing.
+### VLSM-CPT-Routing
+- [Daftar Isi](#daftar-isi)  
 
-Untuk routing, digunakan contoh bagian berikut:
+Untuk routing, digunakan contoh bagian berikut:  
 ![Alt text](images/routing.png)  
   
 Himmel:
