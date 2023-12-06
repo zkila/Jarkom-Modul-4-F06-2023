@@ -334,7 +334,7 @@ Berikut adalah testing ping lebih menyeluruh di CIDR-GNS3:
 
 ### Kendala
 
-Sangat aman.
+Sangat aman
 
 
 
