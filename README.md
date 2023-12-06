@@ -2,7 +2,7 @@
  
 Kelompok F06:
 - Arkana Bilal Imani / 5025211034
-- 
+- 🤓
 
 ## Resource
 
@@ -17,6 +17,7 @@ Kelompok F06:
 - [VLSM Routing](#vlsm-cpt-routing)
 - [CIDR Subnetting](#cidr-gns3-subnetting)
 - [CIDR Routing](#cidr-gns3-routing)
+- [Kendala](#kendala)
 
 ### Soal
 
@@ -139,10 +140,13 @@ Berikut adalah hasil tes ping routing VLSM lebih menyeluruh:
 
 Untuk pembagian kelas pada CIDR, diperlukan juga penggabungan penggabungan untuk membagikan IP dan NID ke setiap subnet.  
   
-Pembagian kelas A:  
-![Alt text](images/vlsm.png)  
+Pembagian kelas A (CPT):  
+![Alt text](images/vlsm.png)
+
+Pembagian kelas A (GNS3):
+![alt](images/cidr.png)
   
-Untuk pembagian kelas B, subnet subnet pada edge yang digabungkan akan digabungkan. Beberapa subnet yang berada di samping (A12, A4, A1, A2, dll) akan diabaikan terlebih dahulu karena harus menunggu subnet subnet bercabang yang ada dibawahnya untuk digabungkan terlebih dahulu. 
+Untuk pembagian kelas B, subnet-subnet pada edge yang digabungkan akan digabungkan. Beberapa subnet yang berada di samping (A12, A4, A1, A2, dll) akan diabaikan terlebih dahulu karena harus menunggu subnet-subnet bercabang yang ada dibawahnya untuk digabungkan terlebih dahulu. 
 
 Pembagian kelas B:
 ![Alt text](images/pembagianb.png)
@@ -188,7 +192,7 @@ Tree CIDR:
 ![alt](images/cidrtree.png)
 
 - Aturan percabangan tree CIDR sesuai dengan di modul, dimana percabangan membagi 2 IP sesuai dengan netmask diatasnya.
-- Contoh pada `J1/13` dengan cabang `I1/14` dan `B3/23`. walaupun salah satu cabangnya (`B3`) memiliki netmask jauh lebih kecil (`/23`), pembagiannya tetap membagi 2 IP `J1/13` sesuai dengan netmasknya. Dari `192.220.0.0` menjadi `192.220.0.0` dan `192.224.0.0`.
+- Contoh pada `J1/13` dengan cabang `I1/14` dan `B3/23`. walaupun salah satu cabangnya (`B3`) memiliki netmask jauh lebih kecil (`/23`), pembagiannya tetap membagi 2 IP `J1/13` sesuai dengan netmasknya. Dari `192.220.0.0` menjadi `192.220.0.0` dan `192.224.0.0` karena range netmask `/13` adalah `192.220.0` sampai `192.227.0.0`
 
 Dengan tree tersebut bisa dilakukan pembagian IP ke setiap kelas A sebagai berikut:
 
@@ -198,10 +202,134 @@ Dengan tree tersebut bisa dilakukan pembagian IP ke setiap kelas A sebagai berik
 - NID sudah sesuai dengan hasil tree.
 - Perhitungan IP Broadcast juga sama dengan perhitungan pada pembagian subnet VLSM, dimana NID + jumlah kemungkinan IP dari netmask.
 
+Pemberian NID tersebut dalam GNS3 memiliki sedikit perbedaan dengan di CPT. Berikut adalah contoh yang akan digunakan pada kelas A5:
+
+![alt](images/a5.png)
+
+IP address, netmask, dan gateway langsung dimasukkan kedalam network config di router (Fern) dan client (AppetitRegion) seperti berikut:
+
+![alt](images/konfigfern.png)
+![alt](images/konfigapetit.png)
+
+- Bagian `eth0` adalah konfigurasi Fern di subnet A20 yang memiliki IP `192.222.8.2`.
+- Bagian `eth1` adalah konfigurasi Fern di subnet A5 yang memiliki IP address dan netmask yang sudah sesuai dengan aturan subnetting VLSM juga. IP address dari Fern adalah NID A5 (`192.222.0.0`) + 1 = `192.222.0.1`
+- Fern tidak diberi gateway untuk kedua bagian `eth` karena akan didefine pada saat routing nanti.
+- IP address, netmask dan gateway dari client di A5, salah satunya AppetitRegion juga sudah disesuaikan dengan aturan diatas.
+- IP address AppetitRegion didapat dengan menambahkan NID dengan 3 karena `192.222.0.1` sudah dipakai untuk router (Fern) dan `192.222.0.2` sudah dipakai client satunya (LaubHills).
+- Gateway AppetitRegion sudah disesuaikan dengan IP Fern.
+
+Berikut adalah hasil testing ping dalam satu subnet (A5) tersebut:  
+
+![alt](images/tesa5.png)
+
+Selebihnya, konfigurasi satu subnet pada subnet-subnet lain harusnya sama, dan hanya membutuhkan mengedit network config saja pada client dan router.
+
 ### CIDR-GNS3-Routing
 - [Daftar Isi](#daftar-isi)  
 
 Karena CIDR menggunakan GNS3, metode routing sedikit berbeda, menggunakan command `route` di masing masing router.
+
+Diambil contoh pada bagian topologi berikut:
+
+![alt](images/rutecidr.png)
+
+Denken:
+```
+route add -net 0.0.0.0 netmask 0.0.0.0 gw 192.224.1.1
+```
+![alt](images/rutedenken.png)
+
+Pada Denken, routing yang dilakukan hanya 1, yaitu `0.0.0.0 `dengan netmask `0.0.0.0` melewati `192.224.1.1`.
+- Sama dengan konfigurasi pada VLSM, dilakukan 1 routing saja pada Denken karena Denken adalah router yang berada di subnet paling ujung.
+- `192.224.1.1` adalah IP address router yang mengarah ke luar, yaitu IP Aura di subnet A17.
+
+Dengan konfigurasi tersebut, client (RoyalCapital dan WilleRegion) dan router (Denken) di subnet A3 dapat melakukan ping ke subnet A17. Ping ini masih bsia berjalan satu arah saja karena belum dilakukan routing di router Aura/subnet A17.
+
+Aura:
+```
+route add -net 192.224.0.0 netmask 255.255.255.0 gw 192.224.1.2 #A3
+```
+![alt](images/ruteaura.png)
+
+Pada Aura, routing yang dilakukan adalah `192.224.0.0` dengan netmask `255.255.255.0` melalui `192.224.1.2` dan beberapa routing lain diluar konteks contoh.
+
+- Subnet yang dikenalkan ke Aura adalah subnet `192.224.0.0` yang merupakan NID dari kelas A3.
+- Netmask yang diberikan juga netmask yang dipakai oleh kelas A3 tersebut.
+- Cara Aura bisa mengakses subnet tersebut adalah dengan melalui router Denken dengan IP `192.224.1.2` melalui koneksi `eth1` yang sudah didefinisikan di network config Aura seperti diatas.
+
+Dengan konfigurasi tersebut, subnet A17 sudah bisa melakukan ping ke subnet A3 dan sebaliknya.
+
+Berikut adalah hasil tes ping routing pada bagian ini:
+![alt](images/tesaura.png)
+![alt](images/teswille.png)
+
+Selebihnya, konfigurasi routing antar subnet yang lain harusnya sama, dengan pengenalan setiap subnet yang tidak langsung terhubung dengan menggunakan command `route add` tersebut.
+
+Karena Aura adalah router pusat, maka Aura adalah router dengan konfigurasi routing terbanyak karena harus mengenal semua subnet pada topologi ini.
+
+Berikut adalah konfigurasi routing aura:
+```
+route add -net 192.220.0.0 netmask 255.255.255.192 gw 192.221.0.2 #A8
+route add -net 192.220.4.0 netmask 255.255.252.0 gw 192.221.0.2 #A9
+route add -net 192.220.8.0 netmask 255.255.255.252 gw 192.221.0.2 #A13
+route add -net 192.220.16.0 netmask 255.255.254.0 gw 192.221.0.2 #A12
+
+route add -net 192.220.128.0 netmask 255.255.255.0 gw 192.221.0.2 #A10
+route add -net 192.220.132.0 netmask 255.255.252.0 gw 192.221.0.2 #A11
+
+route add -net 192.220.144.0 netmask 255.255.255.252 gw 192.221.0.2 #A1
+route add -net 192.220.64.0 netmask 255.255.255.248 gw 192.221.0.2 #A2
+
+route add -net 192.224.0.0 netmask 255.255.255.0 gw 192.224.1.2 #A3
+
+route add -net 192.222.0.0 netmask 255.255.248.0 gw 192.223.0.2 #A5
+route add -net 192.222.32.0 netmask 255.255.255.248 gw 192.223.0.2 #A7
+route add -net 192.222.16.0 netmask 255.255.252.0 gw 192.223.0.2 #A6
+
+route add -net 192.222.8.0 netmask 255.255.255.252 gw 192.223.0.2 #A20
+route add -net 192.222.32.8 netmask 255.255.255.252 gw 192.223.0.2 #A21
+
+route add -net 192.222.64.0 netmask 255.255.255.252 gw 192.223.0.2 #A19
+```
+
+![alt](images/rute-n.png)
+
+
+Semua gateway tersebut juga sudah sesuai dengan network config Aura sebagai berikut:
+
+```
+auto eth0
+iface eth0 inet dhcp
+
+auto eth1
+iface eth1 inet static
+	address 192.224.1.1
+	netmask 255.255.255.252
+
+auto eth2
+iface eth2 inet static
+	address 192.223.0.1
+	netmask 255.255.255.252
+
+auto eth3
+iface eth3 inet static
+	address 192.221.0.1
+	netmask 255.255.255.252
+```
+![alt](images/ethaura.png)
+
+Berikut adalah testing ping lebih menyeluruh di CIDR-GNS3:
+
+- WilleRegion to ScwherMountains:
+![alt](images/tes1.png)
+- RiegelCanyon to Lugner:
+![alt](images/tes2.png)
+- Flamme to GranzChannel:
+![alt](images/tes3.png)
+
+### Kendala
+
+Sangat aman.
 
 
 
