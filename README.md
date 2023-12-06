@@ -15,6 +15,7 @@ Kelompok F06:
 - [Pembagian Subnet](#pembagian-subnet)
 - [VLSM Subnetting](#vlsm-cpt-subnetting)
 - [VLSM Routing](#vlsm-cpt-routing)
+- [CIDR Subnetting](#cidr-gns3-subnetting)
 
 ### Soal
 
@@ -41,7 +42,6 @@ Dengan pembagian rute sebagai berikut:
 
 ### VLSM-CPT-Subnetting
 - [Daftar Isi](#daftar-isi) 
-
 
 Dengan pembagian kelas A sebagai berikut:
 ![Alt text](images/vlsm.png)  
@@ -106,7 +106,46 @@ Untuk routing, digunakan contoh bagian berikut:
 Himmel:
 ![Alt text](images/rutehimmel.png)
   
-Pada Himmel, routing yang dilakukan adalah `0.0.0.0/0` melewati `192.224.0.149`.
+Pada Himmel, routing yang dilakukan hanya 1, yaitu `0.0.0.0/0` melewati `192.224.0.149`. 
+- Hal ini karena Himmel adalah router yang berada di subnet paling ujung (A7). 
+- Routing pada subnet paling ujung harus selalu default routing saja. 
+- Next hop `192.224.0.149` mengarah ke subnet luar, yaitu IP Flamme di subnet A21.
+  
+Dengan konfigurasi tersebut client (SchwerMountains) dan router (Himmel) di subnet A7 dapat melakukan ping ke subnet A21. Namun ping ini hanya bisa berjalan satu arah karena routing masih dilakukan di Himmel saja, belum di Flamme/subnet A21.
+  
+Flamme:
+![Alt text](images/ruteflamme.png)
+Pada Flamme, routing yang dilakukan adalah `0.0.0.0/0` melewati `192.224.0.141` dan `192.224.0.16/29` melewati `192.224.0.150`.
+  
+- Karena Flamme adalah router yang  menghubungkan beberapa router sekaligus (Himmel, Fern dan Frieren), terdapat beberapa subnet yang dikenalkan di router ini.
+- Flamme juga memiliki default routing, yang mengarah ke IP Frieren (`192.224.0.141`) di subnet A19.
+- Untuk mengenalkan subnet A7 ke Flamme, dibuatkan routing yang menggunakan NID dari A7 (`192.224.0.16`) dengan netmask yang sesuai, melalui IP Himmel (`192.224.0.150`) di subnet A21.
+  
+Dengan konfigurasi tersebut, subnet A21 sudah bisa melakukan ping ke subnet A7. Subnet A7 juga bisa melakukan ping ke arah luar subnet A21, pada kasus ini, A19.  
+  
+Karena subnet Flamme juga memiliki client (RohrRoad) pada subnet A6, maka subnet ini secara otomatis bisa melakukan ping juga pada subnet A7.
+
+Berikut adalah hasil tes ping routing pada bagian ini:  
+![Alt text](images/tesrouting.png)
+  
+Selebihnya, konfigurasi routing antar subnet yang lain harusnya sama, dengan pengenalan setiap subnet yang tidak langsung terhubung di bagian static routing di router.  
+  
+Berikut adalah hasil tes ping routing VLSM lebih menyeluruh:
+![Alt text](images/tesvlsm.png)
+
+### CIDR-GNS3-Subnetting
+- [Daftar Isi](#daftar-isi)  
+
+Untuk pembagian kelas pada CIDR, diperlukan juga penggabungan penggabungan untuk membagikan IP dan NID ke setiap subnet.  
+  
+Pembagian kelas A:  
+![Alt text](images/vlsm.png)  
+
+Pembagian kelas B:
+
+
+
+
 
 
 
