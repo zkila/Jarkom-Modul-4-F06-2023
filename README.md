@@ -16,6 +16,7 @@ Kelompok F06:
 - [VLSM Subnetting](#vlsm-cpt-subnetting)
 - [VLSM Routing](#vlsm-cpt-routing)
 - [CIDR Subnetting](#cidr-gns3-subnetting)
+- [CIDR Routing](#cidr-gns3-routing)
 
 ### Soal
 
@@ -140,8 +141,67 @@ Untuk pembagian kelas pada CIDR, diperlukan juga penggabungan penggabungan untuk
   
 Pembagian kelas A:  
 ![Alt text](images/vlsm.png)  
+  
+Untuk pembagian kelas B, subnet subnet pada edge yang digabungkan akan digabungkan. Beberapa subnet yang berada di samping (A12, A4, A1, A2, dll) akan diabaikan terlebih dahulu karena harus menunggu subnet subnet bercabang yang ada dibawahnya untuk digabungkan terlebih dahulu. 
 
 Pembagian kelas B:
+![Alt text](images/pembagianb.png)
+![Alt text](images/sheetb.png)
+  
+Begitu juga dengan kelas C, semua subnet di edge yang akan digabungkan.
+
+Pembagian kelas C:
+![Alt text](images/pembagianc.png)
+![alt text](images/sheetc.png)
+  
+Pembagian kelas D:
+![alt](images/pembagiand.png)
+![alt](images/sheetd.png)
+  
+Pembagian kelas E:
+![alt](images/pembagiane.png)
+![alt](images/sheete.png)
+  
+Pembagian kelas F:
+![alt](images/pembagianf.png)
+![alt](images/sheetf.png)
+  
+Pembagian kelas G:
+![alt](images/pembagiang.png)
+![alt](images/sheetg.png)
+  
+Pembagian kelas H:
+![alt](images/pembagianh.png)
+![alt](images/sheeth.png)
+
+Pembagian kelas I:
+![alt](images/pembagiani.png)
+![alt](images/sheeti.png)
+
+Pembagian kelas J:
+![alt](images/pembagianj.png)
+![alt](images/sheetj.png)
+
+Dengan penggabungan kelas sudah dilakukan, dapat dibuat tree dengan Netmask di root sebesar `/13`.
+
+Tree CIDR:
+![alt](images/cidrtree.png)
+
+- Aturan percabangan tree CIDR sesuai dengan di modul, dimana percabangan membagi 2 IP sesuai dengan netmask diatasnya.
+- Contoh pada `J1/13` dengan cabang `I1/14` dan `B3/23`. walaupun salah satu cabangnya (`B3`) memiliki netmask jauh lebih kecil (`/23`), pembagiannya tetap membagi 2 IP `J1/13` sesuai dengan netmasknya. Dari `192.220.0.0` menjadi `192.220.0.0` dan `192.224.0.0`.
+
+Dengan tree tersebut bisa dilakukan pembagian IP ke setiap kelas A sebagai berikut:
+
+![alt](images/pembagiancidr.png)
+
+- Karena pembagian kelas A sama dengan pada metode CIDR, semua netmask juga sama.
+- NID sudah sesuai dengan hasil tree.
+- Perhitungan IP Broadcast juga sama dengan perhitungan pada pembagian subnet VLSM, dimana NID + jumlah kemungkinan IP dari netmask.
+
+### CIDR-GNS3-Routing
+- [Daftar Isi](#daftar-isi)  
+
+Karena CIDR menggunakan GNS3, metode routing sedikit berbeda, menggunakan command `route` di masing masing router.
 
 
 
